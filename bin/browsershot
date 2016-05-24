@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+var join = require('path').join;
+var lodash = require('lodash');
+
+var api = require('../index');
+
+var client = lodash.memoize(createClient);
+
+var args = require('yargs')
+  .usage('$0 <cmd> [args]')
+  .config('config') // --config loads JSON
+  .global('config') // expose config JSON to subcommands
+  .option('username', {
+    alias: 'u',
+    describe: 'username'
+  })
+  .option('password', {
+    alias: 'p',
+    describe: 'password'
+  })
+  .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
+  .help('help')
+  .strict() // Any command-line argument given that is not demanded, or does not have a corresponding description, will be reported as an error.
+  .argv;
+
+function createClient(args) {
+  return api({
+    username: args.username,
+    password: args.password
+  });
+}
+
+function listBrowsers(args) {
+  client(args)
+    .list()
+    .then(
+      console.log.bind(console),
+      console.error.bind(console)
+    );
+}
