@@ -6,22 +6,24 @@ var api = require('../index');
 
 var client = lodash.memoize(createClient);
 
-var args = require('yargs')
-  .usage('$0 <cmd> [args]')
-  .config('config') // --config loads JSON
-  .global('config') // expose config JSON to subcommands
-  .option('username', {
-    alias: 'u',
-    describe: 'username'
-  })
-  .option('password', {
-    alias: 'p',
-    describe: 'password'
-  })
-  .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
-  .help('help')
-  .strict() // Any command-line argument given that is not demanded, or does not have a corresponding description, will be reported as an error.
-  .argv;
+var snap = {
+  handler: function (args) {
+    var urls = [args.url];
+    client(args)
+      .snap({ urls: urls })
+      .then(
+        console.log.bind(console),
+        console.error.bind(console)
+      );
+  },
+  builder: function (yargs) {
+    return yargs
+      .option('--url', {
+        alias: 'u',
+        describe: 'url to snap',
+      });
+  }
+};
 
 function createClient(args) {
   return api({
@@ -38,3 +40,22 @@ function listBrowsers(args) {
       console.error.bind(console)
     );
 }
+
+// Do the magic
+var args = require('yargs')
+  .usage('$0 <cmd> [args]')
+  .config('config') // --config loads JSON
+  .global('config') // expose config JSON to subcommands
+  .option('username', {
+    alias: 'un',
+    describe: 'username'
+  })
+  .option('password', {
+    alias: 'pw',
+    describe: 'password'
+  })
+  .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
+  .command('snap', 'take a screenshots', snap)
+  .help('help')
+  .strict() // Any command-line argument given that is not demanded, or does not have a corresponding description, will be reported as an error.
+  .argv;
