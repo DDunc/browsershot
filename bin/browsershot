@@ -9,10 +9,6 @@ var snap = {
     var urls = [args.url];
     client(args)
       .snap({ urls: urls, outputDir: args['output-dir'] })
-      .then(
-        console.log.bind(console),
-        console.error.bind(console)
-      )
       .then(function () {
         console.log('then done');
         return client(args).destroy();
@@ -44,24 +40,23 @@ function listBrowsers(args) {
     );
 }
 
+function destroy(args) {
+  client(args).destroy();
+}
+
 function getBackend(backend) {
-  switch(backend) {
-    case 'browserstack-screenshot':
-      return require('../lib/browserstack-screenshot');
-    case 'phantomjs':
-      return require('../lib/phantomjs');
-  }
+  return require('../lib/' + backend);
 }
 
 // Do the magic
 var args = require('yargs')
   .usage('$0 <cmd> [args]')
   .config('config') // --config loads JSON
-  .global(['config', 'output-dir']) // expose config JSON to subcommands
+  .global(['config', 'output-dir']) // expose these args to subcommands
   .option('backend', {
     alias: 'b',
     describe: 'which backend to use to fetch the screenshots',
-    choices: ['browserstack-screenshot', 'phantomjs']
+    choices: ['browserstack-live', 'browserstack-screenshot', 'phantomjs']
   })
   .option('username', {
     alias: 'un',
@@ -78,6 +73,7 @@ var args = require('yargs')
   })
   .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
   .command('snap', 'take a screenshots', snap)
+  .command('destroy', 'force underlying backend to destroy', { handler: destroy, builder: {} })
   .help('help')
   .strict() // Any command-line argument given that is not demanded, or does not have a corresponding description, will be reported as an error.
   .argv;
