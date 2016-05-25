@@ -2,19 +2,21 @@
 var join = require('path').join;
 var lodash = require('lodash');
 
-var api = require('../index');
-
 var client = lodash.memoize(createClient);
 
 var snap = {
   handler: function (args) {
     var urls = [args.url];
     client(args)
-      .snap({ urls: urls })
+      .snap({ urls: urls, outputDir: args['output-dir'] })
       .then(
         console.log.bind(console),
         console.error.bind(console)
-      );
+      )
+      .then(function () {
+        console.log('then done');
+        return client(args).destroy();
+      });
   },
   builder: function (yargs) {
     return yargs
@@ -26,6 +28,7 @@ var snap = {
 };
 
 function createClient(args) {
+  var api = getBackend(args.backend);
   return api({
     username: args.username,
     password: args.password
@@ -41,18 +44,37 @@ function listBrowsers(args) {
     );
 }
 
+function getBackend(backend) {
+  switch(backend) {
+    case 'browserstack-screenshot':
+      return require('../lib/browserstack-screenshot');
+    case 'phantomjs':
+      return require('../lib/phantomjs');
+  }
+}
+
 // Do the magic
 var args = require('yargs')
   .usage('$0 <cmd> [args]')
   .config('config') // --config loads JSON
-  .global('config') // expose config JSON to subcommands
+  .global(['config', 'output-dir']) // expose config JSON to subcommands
+  .option('backend', {
+    alias: 'b',
+    describe: 'which backend to use to fetch the screenshots',
+    choices: ['browserstack-screenshot', 'phantomjs']
+  })
   .option('username', {
     alias: 'un',
     describe: 'username'
   })
   .option('password', {
     alias: 'pw',
-    describe: 'password'
+    describe: 'password',
+  })
+  .option('output-dir', {
+    alias: 'o',
+    describe: 'directory to save screenshots',
+    default: process.cwd(),
   })
   .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
   .command('snap', 'take a screenshots', snap)
