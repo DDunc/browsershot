@@ -12,26 +12,28 @@ All commands require the `--backend` flag which chooses which service will be us
 
 List available browsers:
 
-    browsershot --username user@example.com --key abc123 list
+    browsershot --username myuser --key abc123 list
 
 Take a screenshot and put it in the current directory:
 
-    browsershot --user user@example.com --key abc123 snap --url https://smallpdf.com
+    browsershot --username myuser --key abc123 snap --url https://smallpdf.com
 
 Take a screenshot and put it in another directory:
 
-    browsershot --user user@example.com --key abc123 snap --output-dir /tmp --url https://smallpdf.com
-
-All command-line arguments can also be read from file in JSON format:
-
-        browsershot --config ./creds.json list
-
-Planned features:
+    browsershot --username myuser --key abc123 snap --output-dir /tmp --url https://smallpdf.com
 
 Read URLs from a file, one URL per file:
 
-    browsershot --user user@example.com --key abc123 snap --input-file ./urls.txt
+    browsershot --username myuser --key abc123 snap --input-file ./urls.txt
 
-All command-line params can also be given as environment variables, in uppercase and prepended by BROWSERSHOT_ e.g. the previous command could be written as:
+All command-line arguments can also be read from file in JSON format:
 
-    BROWSERSHOT_USER=user@example.com BROWSERSHOT_KEY=abc123 BROWSERSHOT_FILE=./urls.txt browsershot
+        browsershot --config ./conf.json list
+
+        $ cat ./conf.json
+
+        {
+          "username": "myuser",
+          "key": "abc123",
+          "backend": "browserstack-screenshot"
+        }

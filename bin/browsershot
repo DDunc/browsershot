@@ -1,12 +1,19 @@
 #!/usr/bin/env node
 var join = require('path').join;
 var lodash = require('lodash');
+var fs = require('fs');
 
 var client = lodash.memoize(createClient);
 
 var snap = {
   handler: function (args) {
-    var urls = [args.url];
+    var urls = args.url || [];
+
+    if (args['input-file']) {
+      var inputs = fs.readFileSync(args['input-file']).toString().split(/(?:\r\n|[\r\n])/);
+      urls = urls.concat( lodash.compact(inputs) );
+    }
+
     client(args)
       .snap({ urls: urls, outputDir: args['output-dir'], widths: args.widths })
       .then(function () {
@@ -19,13 +26,18 @@ var snap = {
       .strict()
       .option('url', {
         alias: 'u',
-        describe: 'url to snap',
+        describe: 'urls to snap',
+        array: true
       })
       .option('widths', {
         alias: 'w',
         describe: 'widths to set viewport to',
         default: 1024,
         array: true
+      })
+      .option('input-file', {
+        alias: 'i',
+        describe: 'a list of URLs, one URL per line'
       });
   }
 };
