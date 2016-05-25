@@ -34,7 +34,7 @@ function createClient(args) {
   var api = getBackend(args.backend);
   return api({
     username: args.username,
-    password: args.password
+    key     : args.key
   });
 }
 
@@ -57,11 +57,12 @@ function getBackend(backend) {
 
 // Do the magic
 var args = require('yargs')
-  .usage('$0 <cmd> [args]')
+  .usage('$0 [general options] <cmd> [command options]')
   .config('config') // --config loads JSON
-  .global(['config', 'output-dir', 'username', 'password', 'backend']) // expose these args to subcommands
+  .global(['config', 'output-dir', 'username', 'key', 'backend']) // expose these args to subcommands
   .option('backend', {
     alias: 'b',
+    demand: true,
     describe: 'which backend to use to fetch the screenshots',
     choices: ['browserstack-automate', 'browserstack-live', 'browserstack-screenshot', 'phantomjs']
   })
@@ -69,9 +70,9 @@ var args = require('yargs')
     alias: 'un',
     describe: 'username'
   })
-  .option('password', {
-    alias: 'pw',
-    describe: 'password',
+  .option('key', {
+    alias: 'k',
+    describe: 'API key',
   })
   .option('output-dir', {
     alias: 'o',
