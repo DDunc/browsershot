@@ -8,7 +8,7 @@ var snap = {
   handler: function (args) {
     var urls = [args.url];
     client(args)
-      .snap({ urls: urls, outputDir: args['output-dir'] })
+      .snap({ urls: urls, outputDir: args['output-dir'], widths: args.widths })
       .then(function () {
         console.log('then done');
         return client(args).destroy();
@@ -16,9 +16,16 @@ var snap = {
   },
   builder: function (yargs) {
     return yargs
-      .option('--url', {
+      .strict()
+      .option('url', {
         alias: 'u',
         describe: 'url to snap',
+      })
+      .option('widths', {
+        alias: 'w',
+        describe: 'widths to set viewport to',
+        default: 1024,
+        array: true
       });
   }
 };
@@ -52,11 +59,11 @@ function getBackend(backend) {
 var args = require('yargs')
   .usage('$0 <cmd> [args]')
   .config('config') // --config loads JSON
-  .global(['config', 'output-dir']) // expose these args to subcommands
+  .global(['config', 'output-dir', 'username', 'password', 'backend']) // expose these args to subcommands
   .option('backend', {
     alias: 'b',
     describe: 'which backend to use to fetch the screenshots',
-    choices: ['browserstack-live', 'browserstack-screenshot', 'phantomjs']
+    choices: ['browserstack-automate', 'browserstack-live', 'browserstack-screenshot', 'phantomjs']
   })
   .option('username', {
     alias: 'un',
