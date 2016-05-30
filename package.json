@@ -10,9 +10,11 @@
   "license": "Apache-2.0",
   "dependencies": {
     "browserstack": "^1.5.0",
+    "chalk": "^1.1.3",
+    "lodash": "^4.13.1",
+    "ora": "^0.2.3",
     "phantom": "^2.1.2",
     "selenium-webdriver": "^2.53.2",
-    "yargs": "^4.7.1",
-    "lodash": "^4.13.1"
+    "yargs": "^4.7.1"
   }
 }
