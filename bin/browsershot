@@ -3,11 +3,15 @@ var join = require('path').join;
 var lodash = require('lodash');
 var fs = require('fs');
 
+var createFilenameMaker = require('../lib/filename');
+
 var client = lodash.memoize(createClient);
 
 var snap = {
   handler: function (args) {
     var urls = args.url || [];
+
+    var filenameMaker = createFilenameMaker(args.filename);
 
     if (args['input-file']) {
       var inputs = fs.readFileSync(args['input-file']).toString().split(/(?:\r\n|[\r\n])/);
@@ -15,9 +19,9 @@ var snap = {
     }
 
     client(args)
-      .snap({ urls: urls, outputDir: args['output-dir'], widths: args.widths })
+      .snap({ urls: urls, outputDir: args['output-dir'], filenameMaker: filenameMaker, widths: args.widths })
       .then(function () {
-        console.log('then done');
+        console.log('Done, destroying backend instance');
         return client(args).destroy();
       });
   },
@@ -38,6 +42,11 @@ var snap = {
       .option('input-file', {
         alias: 'i',
         describe: 'a list of URLs, one URL per line'
+      })
+      .option('filename', {
+        alias: 'f',
+        describe: 'a pattern for parsing the filename',
+        default: 'screenshot-{url}-{width}.png'
       });
   }
 };
@@ -72,6 +81,7 @@ var args = require('yargs')
   .usage('$0 [general options] <cmd> [command options]')
   .config('config') // --config loads JSON
   .global(['config', 'output-dir', 'username', 'key', 'backend']) // expose these args to subcommands
+  .completion()
   .option('backend', {
     alias: 'b',
     demand: true,
