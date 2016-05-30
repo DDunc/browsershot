@@ -12,9 +12,7 @@
     "browserstack": "^1.5.0",
     "phantom": "^2.1.2",
     "selenium-webdriver": "^2.53.2",
-    "yargs": "^4.7.1"
-  },
-  "devDependencies": {
+    "yargs": "^4.7.1",
     "lodash": "^4.13.1"
   }
 }
