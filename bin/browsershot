@@ -86,7 +86,7 @@ var args = require('yargs')
     alias: 'b',
     demand: true,
     describe: 'which backend to use to fetch the screenshots',
-    choices: ['browserstack-automate', 'browserstack-live', 'browserstack-screenshot', 'phantomjs']
+    choices: ['browserstack-automate' /*, 'browserstack-live', 'browserstack-screenshot', 'phantomjs'*/]
   })
   .option('username', {
     alias: 'un',
