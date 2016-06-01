@@ -8,14 +8,14 @@ var createFilenameMaker = require('../lib/filename');
 var client = lodash.memoize(createClient);
 
 var snap = {
-  handler: function (args) {
+  handler: function(args) {
     var urls = args.url || [];
 
     var filenameMaker = createFilenameMaker(args.filename);
 
     if (args['input-file']) {
       var inputs = fs.readFileSync(args['input-file']).toString().split(/(?:\r\n|[\r\n])/);
-      urls = urls.concat( lodash.compact(inputs) );
+      urls = urls.concat(lodash.compact(inputs));
     }
 
     urls = urls.map(function(u) {
@@ -32,13 +32,19 @@ var snap = {
     }
 
     client(args)
-      .snap({ urls: urls, outputDir: args['output-dir'], filenameMaker: filenameMaker, widths: args.widths, delay: args.delay })
-      .then(function () {
+      .snap({
+        urls: urls,
+        outputDir: args['output-dir'],
+        filenameMaker: filenameMaker,
+        widths: args.widths,
+        delay: args.delay
+      })
+      .then(function() {
         console.log('Done, destroying backend instance');
         return client(args).destroy();
       });
   },
-  builder: function (yargs) {
+  builder: function(yargs) {
     return yargs
       .strict()
       .option('url', {
@@ -73,7 +79,7 @@ function createClient(args) {
   var api = getBackend(args.backend);
   return api({
     username: args.username,
-    key     : args.key
+    key: args.key
   }, args);
 }
 
@@ -83,7 +89,7 @@ function listBrowsers(args) {
     .then(
       console.log.bind(console),
       console.error.bind(console)
-    );
+  );
 }
 
 function destroy(args) {
@@ -104,7 +110,7 @@ var args = require('yargs')
     alias: 'b',
     demand: true,
     describe: 'which backend to use to fetch the screenshots',
-    choices: ['browserstack-automate' /*, 'browserstack-live', 'browserstack-screenshot', 'phantomjs'*/]
+    choices: ['browserstack-automate' /*, 'browserstack-live', 'browserstack-screenshot', 'phantomjs'*/ ]
   })
   .option('username', {
     alias: 'un',
@@ -124,9 +130,15 @@ var args = require('yargs')
     describe: 'directory to save screenshots',
     default: process.cwd(),
   })
-  .command('list', 'list available browsers', { handler: listBrowsers, builder: {} })
+  .command('list', 'list available browsers', {
+    handler: listBrowsers,
+    builder: {}
+  })
   .command('snap', 'take a screenshots', snap)
-  .command('destroy', 'force underlying backend to destroy', { handler: destroy, builder: {} })
+  .command('destroy', 'force underlying backend to destroy', {
+    handler: destroy,
+    builder: {}
+  })
   .help('help')
   .strict() // Any command-line argument given that is not demanded, or does not have a corresponding description, will be reported as an error.
   .argv;
