@@ -56,7 +56,7 @@ function createClient(args) {
   return api({
     username: args.username,
     key     : args.key
-  });
+  }, args);
 }
 
 function listBrowsers(args) {
@@ -80,7 +80,7 @@ function getBackend(backend) {
 var args = require('yargs')
   .usage('$0 [general options] <cmd> [command options]')
   .config('config') // --config loads JSON
-  .global(['config', 'output-dir', 'username', 'key', 'backend']) // expose these args to subcommands
+  .global(['config', 'output-dir', 'username', 'key', 'backend', 'local']) // expose these args to subcommands
   .completion()
   .option('backend', {
     alias: 'b',
@@ -95,6 +95,11 @@ var args = require('yargs')
   .option('key', {
     alias: 'k',
     describe: 'API key',
+  })
+  .option('local', {
+    alias: 'l',
+    describe: 'enable local URL testing',
+    default: false
   })
   .option('output-dir', {
     alias: 'o',
