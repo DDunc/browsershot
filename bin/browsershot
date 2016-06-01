@@ -24,7 +24,7 @@ var snap = {
     }
 
     client(args)
-      .snap({ urls: urls, outputDir: args['output-dir'], filenameMaker: filenameMaker, widths: args.widths })
+      .snap({ urls: urls, outputDir: args['output-dir'], filenameMaker: filenameMaker, widths: args.widths, delay: args.delay })
       .then(function () {
         console.log('Done, destroying backend instance');
         return client(args).destroy();
@@ -52,6 +52,11 @@ var snap = {
         alias: 'f',
         describe: 'a pattern for parsing the filename. Also, any property returned by node\'s url.parse() can be used as a placeholder e.g. {host}. The values {date} and {timestamp} are also available.',
         default: 'screenshot-{url}-{width}.png'
+      })
+      .option('delay', {
+        alias: 'd',
+        describe: 'delay to wait after loading page before snapping',
+        default: 0
       });
   }
 };
