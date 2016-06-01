@@ -18,6 +18,14 @@ var snap = {
       urls = urls.concat( lodash.compact(inputs) );
     }
 
+    urls = urls.map(function(u) {
+      var splitByTag = u.split(' ');
+      return {
+        url: splitByTag.length === 2 ? splitByTag[1] : splitByTag[0],
+        tag: splitByTag.length === 2 ? splitByTag[0] : null,
+      };
+    })
+
     if (urls.length === 0) {
       console.log('No urls to snap 😞');
       process.exit(0);
