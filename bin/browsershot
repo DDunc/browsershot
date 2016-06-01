@@ -18,6 +18,11 @@ var snap = {
       urls = urls.concat( lodash.compact(inputs) );
     }
 
+    if (urls.length === 0) {
+      console.log('No urls to snap 😞');
+      process.exit(0);
+    }
+
     client(args)
       .snap({ urls: urls, outputDir: args['output-dir'], filenameMaker: filenameMaker, widths: args.widths })
       .then(function () {
@@ -41,7 +46,7 @@ var snap = {
       })
       .option('input-file', {
         alias: 'i',
-        describe: 'a list of URLs, one URL per line'
+        describe: 'file containing a list of URLs, one URL per line'
       })
       .option('filename', {
         alias: 'f',
