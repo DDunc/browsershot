@@ -50,7 +50,7 @@ var snap = {
       })
       .option('filename', {
         alias: 'f',
-        describe: 'a pattern for parsing the filename',
+        describe: 'a pattern for parsing the filename. Also, any property returned by node\'s url.parse() can be used as a placeholder e.g. {host}. The values {date} and {timestamp} are also available.',
         default: 'screenshot-{url}-{width}.png'
       });
   }
