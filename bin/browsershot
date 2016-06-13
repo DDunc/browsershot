@@ -5,6 +5,10 @@ var fs = require('fs');
 
 var createFilenameMaker = require('../lib/filename');
 
+var isNotLineComment = function(line) {
+  return !/^\s*#/.test(line);
+}
+
 var client = lodash.memoize(createClient);
 
 var snap = {
@@ -17,6 +21,8 @@ var snap = {
       var inputs = fs.readFileSync(args['input-file']).toString().split(/(?:\r\n|[\r\n])/);
       urls = urls.concat(lodash.compact(inputs));
     }
+
+    urls = urls.filter(isNotLineComment);
 
     urls = urls.map(function(u) {
       var splitByTag = u.split(' ');
