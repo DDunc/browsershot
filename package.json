@@ -1,6 +1,6 @@
 {
-  "name": "browsershots",
-  "version": "0.0.1",
+  "name": "browsershot",
+  "version": "0.0.2",
   "description": "",
   "bin": "./bin/browsershot",
   "scripts": {

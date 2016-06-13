@@ -1,4 +1,4 @@
-browsershots
+browsershot
 ===
 
 Take screenshots using Phantomjs or Browserstack APIs
